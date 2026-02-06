@@ -1,0 +1,65 @@
+﻿@page "/metalmart"
+
+<TelerikTileLayout Columns="4"
+                   Height="100%"
+                   Width="100%"
+                   ColumnSpacing="10px"
+                   RowSpacing="10px"
+                   Resizable="true"
+                   Reorderable="true"
+                   Class="bg-light">
+    <TileLayoutItems>
+        <TileLayoutItem RowSpan="2" ColSpan="4" class="bg-primary text-white fs-4">
+            <Content>Metal Mart Accounts</Content>
+        </TileLayoutItem>
+        <!-- <TileLayoutItem HeaderText="Location Select" RowSpan="6" ColSpan="1">
+            <TelerikListView Data="@Data"
+                Pageable="true">
+                <HeaderTemplate>
+                </HeaderTemplate>
+                <Template>
+                </Template>
+            </TelerikListView>
+        </TileLayoutItem> -->
+        <TileLayoutItem HeaderText="Location Select" RowSpan="6" ColSpan="1">
+            <Content>
+                <div style="height: 100%; overflow: hidden;">
+                    @* <TelerikListView Data="@Data"
+                                     Height="100%">
+                        <Template>
+                            <div class="p-3 border-bottom list-item-hover">
+                                <div class="fw-bold text-primary">@context.Name</div>
+                                <div class="small text-muted">
+                                    <i class="k-icon k-i-marker-pin"></i> @context.Location
+                                </div>
+                            </div>
+                        </Template>
+                    </TelerikListView> *@
+                </div>
+            </Content>
+        </TileLayoutItem>
+        <TileLayoutItem HeaderText="Account Details" RowSpan="6" ColSpan="3">
+            <Content>
+                @* <TelerikGrid Data="@Data" Height="100%" Pageable="true" PageSize="5">
+                    <GridColumns>
+                        <GridColumn Field="@nameof(SampleData.Name)" Title="Facility" />
+                        <GridColumn Field="@nameof(SampleData.Location)" Title="Location" />
+                        <GridColumn Field="@nameof(SampleData.Projects)" Title="Active Projects" Width="150px" />
+                        <GridColumn Field="@nameof(SampleData.Status)" Title="Status">
+                            <Template>
+                                @{
+                                    var item = context as SampleData;
+                                    <span class="badge @(item.Status == "Active" ? "bg-success" : "bg-warning")">@item.Status</span>
+                                }
+                            </Template>
+                        </GridColumn>
+                    </GridColumns>
+                </TelerikGrid> *@
+            </Content>
+        </TileLayoutItem>
+    </TileLayoutItems>
+</TelerikTileLayout>
+
+@code {
+
+}

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="AccountInfo.ApiService/AccountInfo.ApiService.csproj" />
+  <Project Path="AccountInfo.AppHost/AccountInfo.AppHost.csproj" />
+  <Project Path="AccountInfo.Data/AccountInfo.Data.csproj" Id="15607fed-954a-4da4-9fca-03e4feaa90ea" />
+  <Project Path="AccountInfo.ServiceDefaults/AccountInfo.ServiceDefaults.csproj" />
+  <Project Path="AccountInfo.Web/AccountInfo.Web.csproj" />
+</Solution>

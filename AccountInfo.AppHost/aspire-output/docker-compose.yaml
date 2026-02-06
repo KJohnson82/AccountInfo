@@ -1,0 +1,86 @@
+services:
+  env-dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
+    ports:
+      - "18888"
+    expose:
+      - "18889"
+      - "18890"
+    networks:
+      - "aspire"
+    restart: "always"
+  accountinfo-postgres:
+    image: "docker.io/library/postgres:17.6"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${ACCOUNTINFO_POSTGRES_PASSWORD}"
+    expose:
+      - "5432"
+    networks:
+      - "aspire"
+  accountinfoapiservice:
+    image: "${ACCOUNTINFOAPISERVICE_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${ACCOUNTINFOAPISERVICE_PORT}"
+      ConnectionStrings__AccountInfo-postgres: "Host=AccountInfo-postgres;Port=5432;Username=postgres;Password=${ACCOUNTINFO_POSTGRES_PASSWORD}"
+      ACCOUNTINFO_POSTGRES_HOST: "AccountInfo-postgres"
+      ACCOUNTINFO_POSTGRES_PORT: "5432"
+      ACCOUNTINFO_POSTGRES_USERNAME: "postgres"
+      ACCOUNTINFO_POSTGRES_PASSWORD: "${ACCOUNTINFO_POSTGRES_PASSWORD}"
+      ACCOUNTINFO_POSTGRES_URI: "postgresql://postgres:${ACCOUNTINFO_POSTGRES_PASSWORD}@AccountInfo-postgres:5432"
+      ACCOUNTINFO_POSTGRES_JDBCCONNECTIONSTRING: "jdbc:postgresql://AccountInfo-postgres:5432"
+      ConnectionStrings__appinfo-db: "Host=AccountInfo-postgres;Port=5432;Username=postgres;Password=${ACCOUNTINFO_POSTGRES_PASSWORD};Database=appinfo-db"
+      APPINFO_DB_HOST: "AccountInfo-postgres"
+      APPINFO_DB_PORT: "5432"
+      APPINFO_DB_USERNAME: "postgres"
+      APPINFO_DB_PASSWORD: "${ACCOUNTINFO_POSTGRES_PASSWORD}"
+      APPINFO_DB_URI: "postgresql://postgres:${ACCOUNTINFO_POSTGRES_PASSWORD}@AccountInfo-postgres:5432/appinfo-db"
+      APPINFO_DB_JDBCCONNECTIONSTRING: "jdbc:postgresql://AccountInfo-postgres:5432/appinfo-db"
+      APPINFO_DB_DATABASENAME: "appinfo-db"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://env-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "accountinfoapiservice"
+    expose:
+      - "${ACCOUNTINFOAPISERVICE_PORT}"
+    networks:
+      - "aspire"
+  webfrontend:
+    image: "${WEBFRONTEND_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${WEBFRONTEND_PORT}"
+      ACCOUNTINFOAPISERVICE_HTTP: "http://accountinfoapiservice:${ACCOUNTINFOAPISERVICE_PORT}"
+      services__accountinfoapiservice__http__0: "http://accountinfoapiservice:${ACCOUNTINFOAPISERVICE_PORT}"
+      ACCOUNTINFOAPISERVICE_HTTPS: "https://accountinfoapiservice:${ACCOUNTINFOAPISERVICE_PORT}"
+      ConnectionStrings__appinfo-db: "Host=AccountInfo-postgres;Port=5432;Username=postgres;Password=${ACCOUNTINFO_POSTGRES_PASSWORD};Database=appinfo-db"
+      APPINFO_DB_HOST: "AccountInfo-postgres"
+      APPINFO_DB_PORT: "5432"
+      APPINFO_DB_USERNAME: "postgres"
+      APPINFO_DB_PASSWORD: "${ACCOUNTINFO_POSTGRES_PASSWORD}"
+      APPINFO_DB_URI: "postgresql://postgres:${ACCOUNTINFO_POSTGRES_PASSWORD}@AccountInfo-postgres:5432/appinfo-db"
+      APPINFO_DB_JDBCCONNECTIONSTRING: "jdbc:postgresql://AccountInfo-postgres:5432/appinfo-db"
+      APPINFO_DB_DATABASENAME: "appinfo-db"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://env-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "webfrontend"
+    ports:
+      - "${WEBFRONTEND_PORT}"
+    depends_on:
+      accountinfoapiservice:
+        condition: "service_started"
+      accountinfo-postgres:
+        condition: "service_started"
+    networks:
+      - "aspire"
+networks:
+  aspire:
+    driver: "bridge"

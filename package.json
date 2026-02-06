@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@progress/kendo-theme-bootstrap": "^12.3.0",
+    "@progress/kendo-theme-fluent": "^12.3.0"
+  }
+}
