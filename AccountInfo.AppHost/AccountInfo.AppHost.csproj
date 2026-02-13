@@ -25,7 +25,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql" Version="10.0.1" />
-    <PackageReference Include="Telerik.UI.for.Blazor" Version="12.3.0" />
   </ItemGroup>
 
 </Project>

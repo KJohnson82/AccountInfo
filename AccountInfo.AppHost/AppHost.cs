@@ -1,6 +1,8 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder.AddPostgres("accountinfo-postgres")
+    .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Session)
     .WithPgAdmin();
 
 var appInfoDb = postgres.AddDatabase("appinfodb");

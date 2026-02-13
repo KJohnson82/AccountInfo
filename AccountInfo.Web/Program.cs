@@ -3,7 +3,8 @@ using AccountInfo.Web.Components;
 using Microsoft.EntityFrameworkCore;
 using Aspire.Npgsql;
 using Aspire.Npgsql.EntityFrameworkCore;
-using AccountInfo.Data;
+using AccountInfo.Data.Data;
+using AccountInfo.ServiceDefaults;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,9 +20,14 @@ builder.Services.AddTelerikBlazor();
 
 builder.Services.AddOutputCache();
 
-builder.AddNpgsqlDataSource(connectionName: "appinfodb");
+//builder.AddNpgsqlDataSource(connectionName: "appinfodb");
 
+builder.Services.AddHttpClient("ApiClient", client =>
+{
+    client.BaseAddress = new Uri("https+http://accountinfoapiservice");
+});
 
+builder.AddNpgsqlDbContext<AppInfoDbContext>(connectionName: "appinfodb");
 
 
 //builder.Services.AddHttpClient<WeatherApiClient>(client =>

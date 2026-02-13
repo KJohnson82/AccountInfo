@@ -1,3 +1,8 @@
+using AccountInfo.Data.Data;
+using AccountInfo.Data.DTOs;
+using AccountInfo.ServiceDefaults;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire client integrations.
@@ -9,37 +14,48 @@ builder.Services.AddProblemDetails();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.AddNpgsqlDbContext<AppInfoDbContext>(
+    connectionName: "appinfodb");
+
+
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    Console.WriteLine("ATTEMPTING TO RUN MIGRATIONS...");
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppInfoDbContext>();
+    await db.Database.MigrateAsync();
+    Console.WriteLine("MIGRATIONS COMPLETED!");
+}
 
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
+
+
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-//string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
+app.MapGet("/api/locations", async (AppInfoDbContext db) =>
+{
+    var locations = await db.Locations
+        .Include(l => l.Loctype)
+        .Where(l => l.Active == true)
+        .ToListAsync();
+    return Results.Ok(locations);
+});
 
-//app.MapGet("/weatherforecast", () =>
-//{
-//    var forecast = Enumerable.Range(1, 5).Select(index =>
-//        new WeatherForecast
-//        (
-//            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-//            Random.Shared.Next(-20, 55),
-//            summaries[Random.Shared.Next(summaries.Length)]
-//        ))
-//        .ToArray();
-//    return forecast;
-//})
-//.WithName("GetWeatherForecast");
+app.MapGet("/api/loctypes", async (AppInfoDbContext db) =>
+{
+    //var loctypes = await db.Loctypes.ToListAsync();
+    var loctypes = LoctypeDto.GetLoctype();
+    return Results.Ok(loctypes);
+});
 
 app.MapDefaultEndpoints();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

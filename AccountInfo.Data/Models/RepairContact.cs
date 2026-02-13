@@ -28,6 +28,9 @@ namespace AccountInfo.Data.Models
         [StringLength(20)]
         public string? RPPhone { get; set; }
 
+        [StringLength(50)]
+        public string? RPEmail { get; set; }
+
         public string? RPPortal { get; set; }
 
         // Navigation properties

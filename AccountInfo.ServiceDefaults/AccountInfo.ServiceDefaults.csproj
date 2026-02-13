@@ -23,7 +23,6 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
-    <PackageReference Include="Telerik.UI.for.Blazor" Version="12.3.0" />
   </ItemGroup>
 
 </Project>

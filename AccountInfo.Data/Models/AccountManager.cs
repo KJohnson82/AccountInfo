@@ -26,7 +26,6 @@ namespace AccountInfo.Data.Models
         [StringLength(100)]
         public string AMName { get; set; } = string.Empty;
 
-        [Required]
         [StringLength(100)]
         [EmailAddress]
         public string AMEmail { get; set; } = string.Empty;

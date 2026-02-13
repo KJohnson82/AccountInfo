@@ -2,15 +2,14 @@
 
 <div class="">
 <TelerikTileLayout Columns="4"
-                   Height="100%"
-                   Width="100%"
+                   Height="calc(100vh - var(--app-bottom-bar-height, 100px) - 1rem)"
                    ColumnSpacing="10px"
                    RowSpacing="10px"
                    Resizable="true"
-                   Reorderable="true"
-                   Class="">
+                   Reorderable="false"
+                   Class="tilelayoutmain pt-0  ">
     <TileLayoutItems>
-        <TileLayoutItem RowSpan="2" ColSpan="4" class="bg-primary text-white fs-4">
+        <TileLayoutItem RowSpan="1" ColSpan="4" Class="tilelayoutheader fs-4 text-uppercase fw-bold text-start pb-3" >
             <Content>Corporate Accounts</Content>
         </TileLayoutItem>
         <!-- <TileLayoutItem HeaderText="Location Select" RowSpan="6" ColSpan="1">
@@ -22,9 +21,12 @@
                 </Template>
             </TelerikListView>
         </TileLayoutItem> -->
-        <TileLayoutItem HeaderText="Location Select" RowSpan="6" ColSpan="1">
+        <TileLayoutItem HeaderText="Location Select" RowSpan="6" ColSpan="1" >
             <Content>
-                <div style="height: 100%; overflow: hidden;">
+                @* <TelerikListView Height="100%" Data="@Data">
+
+                </TelerikListView> *@
+                @* <div style="height: 100%; overflow: hidden;"> *@
                     @* <TelerikListView Data="@Data"
                                      Height="100%">
                         <Template>
@@ -36,7 +38,21 @@
                             </div>
                         </Template>
                     </TelerikListView> *@
-                </div>
+                    // How this is done in the other app
+                        @* <div class="button-page-container">
+                            <div class="scrollable-wrapper">
+                                <TelerikListView Data="@Departments" EnableLoaderContainer="true" Class="button-list-container">
+                                    <Template Context="dept">
+                                        <NavLink href="@($"/corporate/{dept.Id}")" class="k-text-no-underline k-shadow">
+                                            <div class="menu-item rounded-3 k-d-flex k-flex-row k-text-uppercase k-font-size-lg k-font-semibold k-text-white k-justify-content-start k-align-items-center k-pl-10 k-bg-gradient k-py-6 hover:k-elevation-2">
+                                                @dept.DeptName
+                                            </div>
+                                        </NavLink>
+                                    </Template>
+                                </TelerikListView>
+                            </div>
+                        </div> *@
+                @* </div> *@
             </Content>
         </TileLayoutItem>
         <TileLayoutItem HeaderText="Account Details" RowSpan="6" ColSpan="3">
@@ -63,6 +79,76 @@
 
 </div>
 
+<style>
+
+    
+    .menu-item {
+        background-color: #ff6358;
+        margin: 8px 10px;
+        border-radius: 0.75rem;
+        flex: 1;
+        letter-spacing: 0.5px;
+    }
+
+    .tilelayoutmain {
+        background-color: var(--kendo-color-secondary-subtle);
+        
+    }
+
+        .menu-item:hover {
+            transition: transform 0.2s ease-in, opacity 0.2s ease-in;
+            transform: translateY(0) scale(0.95);
+            background-color: #FA574B;
+        }
+
+    .button-page-container {
+        height: calc(100% - 60px);
+        display: flex;
+        flex-direction: column;
+        background-color: var(--kendo-color-secondary-emphasis);
+    }
+
+    .button-list-container {
+        background-color: transparent !important;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin: 1px 0;
+        padding: 2px 0;
+        overflow-y: auto;
+    }
+
+    .scrollable-wrapper {
+        flex: 1;
+        overflow-y: auto;
+        margin: 1px 0;
+        padding: 0px 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+        .scrollable-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+    .tilelayoutheader {
+        background-color: var(--kendo-color-primary, var(--kendo-primary, #0d6efd));
+        color: var(--kendo-color-primary-contrast, #fff);
+        letter-spacing: 1px;
+    }
+
+    /* Fill and scroll behavior for tile content */
+    .tile-panel-inner {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        padding: 0.5rem;
+        box-sizing: border-box;
+    }
+</style>
+
 @code {
+
+    
 
 }

@@ -49,8 +49,11 @@ namespace AccountInfo.Data.Models
         public string? Hours { get; set; }
 
         // Foreign key
+        //[Required]
+        //public int LoctypeId { get; set; }
         [Required]
-        public int? LoctypeId { get; set; }
+        [Column("LoctypeId")]
+        public virtual Loctype? Loctype { get; set; }
 
         public string? AreaManager { get; set; }
 
@@ -61,7 +64,7 @@ namespace AccountInfo.Data.Models
         public DateTime? RecordAdd { get; set; } = DateTime.Now;
 
         // Navigation property
-        public virtual Loctype? LocationType { get; set; }
+        //public virtual Loctype? LocationType { get; set; }
 
         public List<InternetAccount> InternetAccounts { get; set; } = new();
 

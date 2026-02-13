@@ -1,14 +1,17 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
 
 <TelerikRootComponent>
-<div class="page app-layout-wrapper">
+<div class="page ">
     <div class="sidebar">
         <NavMenu />
-    </div><div>
+    </div>
+    <div class="vw-100 vh-100 app-layout-wrapper">
     <TelerikAppBar ThemeColor="@ThemeConstants.AppBar.ThemeColor.Primary"
     Position="AppBarPosition.Top"
     PositionMode="AppBarPositionMode.Static"
-    Class="mb-4">
+    Class="appbar-top mb-2">
         <AppBarSection>
             <div class="d-flex align-items-center">
                 <span class="k-icon k-i-globe me-2"></span>
@@ -18,14 +21,13 @@
         
     </TelerikAppBar>
             <main>
-               
+               <div>
+                   @Body
+               </div>
 
-                <article class="content px-4">
-                    @Body
-                </article>
             </main>
 
-            <TelerikAppBar ThemeColor="@ThemeConstants.AppBar.ThemeColor.Primary"
+            <TelerikAppBar ThemeColor="@ThemeConstants.AppBar.ThemeColor.Info"
                            Position="AppBarPosition.Bottom"
                            PositionMode="AppBarPositionMode.Static"
                            Class="appbar-bottom">
@@ -52,15 +54,25 @@
 
 <style>
     html, body {
-        height: 100%;
+        /* height: 100vh%; */
         margin: 0;
         padding: 0;
         overflow-x: hidden;
+        background-color: var(--kendo-color-secondary-subtle);
     }
 
-    app-layout-wrapper {
+
+    .app-layout-wrapper {
         height: 100vh;
         display: flex;
         flex-direction: column;
+    }
+    .appbar-top {
+        flex-shrink: 0;
+        z-index: 1000;
+    }
+    .appbar-bottom {
+        flex-shrink: 0;
+        z-index: 1000;
     }
 </style>
