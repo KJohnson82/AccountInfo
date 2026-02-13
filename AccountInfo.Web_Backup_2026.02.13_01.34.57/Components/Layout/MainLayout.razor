@@ -1,0 +1,78 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+
+<TelerikRootComponent>
+<div class="page ">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+    <div class="vw-100 vh-100 app-layout-wrapper">
+    <TelerikAppBar ThemeColor="@ThemeConstants.AppBar.ThemeColor.Primary"
+    Position="AppBarPosition.Top"
+    PositionMode="AppBarPositionMode.Static"
+    Class="appbar-top mb-2">
+        <AppBarSection>
+            <div class="d-flex align-items-center">
+                <span class="k-icon k-i-globe me-2"></span>
+                <span class="fs-5">Account Info Dashboard</span>
+            </div>
+        </AppBarSection>
+        
+    </TelerikAppBar>
+            <main>
+               <div>
+                   @Body
+               </div>
+
+            </main>
+
+            <TelerikAppBar ThemeColor="@ThemeConstants.AppBar.ThemeColor.Info"
+                           Position="AppBarPosition.Bottom"
+                           PositionMode="AppBarPositionMode.Static"
+                           Class="appbar-bottom">
+                <AppBarSpacer />
+                <AppBarSection>
+                    <div id="copyright">
+                        Copyright &copy; @DateTime.Today.Year McElroy Metal Inc. All rights reserved.
+                    </div>
+                </AppBarSection>
+                <AppBarSpacer />
+            </TelerikAppBar>
+
+</div>
+
+    
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+</TelerikRootComponent>
+
+<style>
+    html, body {
+        /* height: 100vh%; */
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        background-color: var(--kendo-color-secondary-subtle);
+    }
+
+
+    .app-layout-wrapper {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .appbar-top {
+        flex-shrink: 0;
+        z-index: 1000;
+    }
+    .appbar-bottom {
+        flex-shrink: 0;
+        z-index: 1000;
+    }
+</style>

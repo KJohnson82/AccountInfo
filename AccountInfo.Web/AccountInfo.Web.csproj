@@ -1,26 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.1.0" />
-    <PackageReference Include="Aspire.Npgsql" Version="13.1.0" />
-    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.1.1" />
+    <PackageReference Include="Aspire.Npgsql" Version="13.1.1" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql" Version="10.0.1" />
-    <PackageReference Include="Telerik.UI.for.Blazor" Version="12.3.0" />
+    <PackageReference Include="Telerik.UI.for.Blazor">
+      <Version>13.0.0</Version>
+    </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\AccountInfo.Data\AccountInfo.Data.csproj" />
     <ProjectReference Include="..\AccountInfo.ServiceDefaults\AccountInfo.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\AccountInfo.Shared\AccountInfo.Shared.csproj" />
   </ItemGroup>
-
 </Project>

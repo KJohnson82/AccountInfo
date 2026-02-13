@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace AccountInfo.Data.Models
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser
     {
         [Column("Id")]
         [Key]

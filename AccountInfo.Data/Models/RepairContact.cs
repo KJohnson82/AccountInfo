@@ -1,8 +1,5 @@
-﻿using AccountInfo.Data.Models;
-using System;
-using System.Collections.Generic;
+﻿using AccountInfo.Shared.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace AccountInfo.Data.Models
 {

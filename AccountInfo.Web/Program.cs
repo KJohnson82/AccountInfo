@@ -1,10 +1,8 @@
-using AccountInfo.Web;
-using AccountInfo.Web.Components;
-using Microsoft.EntityFrameworkCore;
-using Aspire.Npgsql;
-using Aspire.Npgsql.EntityFrameworkCore;
 using AccountInfo.Data.Data;
 using AccountInfo.ServiceDefaults;
+using AccountInfo.Web.Components;
+using Microsoft.EntityFrameworkCore;
+
 
 
 var builder = WebApplication.CreateBuilder(args);

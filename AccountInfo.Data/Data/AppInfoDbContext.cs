@@ -1,4 +1,5 @@
 ﻿using AccountInfo.Data.Models;
+using AccountInfo.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccountInfo.Data.Data

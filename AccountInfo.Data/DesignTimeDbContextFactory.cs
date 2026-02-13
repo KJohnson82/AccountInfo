@@ -1,9 +1,8 @@
-using System;
-using System.IO;
 using AccountInfo.Data.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+
 
 namespace AccountInfo.Data
 {

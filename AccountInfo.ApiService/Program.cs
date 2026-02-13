@@ -1,7 +1,8 @@
 using AccountInfo.Data.Data;
-using AccountInfo.Data.DTOs;
 using AccountInfo.ServiceDefaults;
+using AccountInfo.Shared.DTOs;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

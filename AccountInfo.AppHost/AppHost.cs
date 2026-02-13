@@ -18,7 +18,7 @@ builder.AddProject<Projects.AccountInfo_Web>("webfrontend")
     .WaitFor(accountinfoapiservice)
     .WithReference(accountinfoapiservice)
     .WithReference(appInfoDb);
-    
+
 
 builder.AddDockerComposeEnvironment("env");
 

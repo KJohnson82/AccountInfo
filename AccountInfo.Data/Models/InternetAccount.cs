@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace AccountInfo.Data.Models
 {
@@ -53,7 +49,7 @@ namespace AccountInfo.Data.Models
         public DateTime? BillEntryDate { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
-        public decimal? MonthlyCost { get; set; } 
+        public decimal? MonthlyCost { get; set; }
 
         public string? AdminPortalURL { get; set; }
 
@@ -79,36 +75,3 @@ namespace AccountInfo.Data.Models
         public List<RepairContact> RepairContacts { get; set; } = new();
     }
 }
-
-//public string? AccountManager1 { get; set; }
-//[StringLength(50)]
-//public string? AMEmail1 { get; set; }
-//[StringLength(20)]
-//public string? AMPhone1 { get; set; }
-//[StringLength(50)]
-//public string? AccountManager2 { get; set; }
-//[StringLength(50)]
-//public string? AMEmail2 { get; set; }
-//[StringLength(20)]
-//public string? AMPhone2 { get; set; }
-//[StringLength(50)]
-//public string? AccountManager3 { get; set; }
-//[StringLength(50)]
-//public string? AMEmail3 { get; set; }
-//[StringLength(20)]
-//public string? AMPhone3 { get; set; }
-//[StringLength(100)]
-//public string? RepairContact1 { get; set; }
-//[StringLength(20)]
-//public string? RepairPhone1 { get; set; }
-//public string? RepairPortal1 { get; set; }
-//[StringLength(100)]
-//public string? RepairContact2 { get; set; }
-//[StringLength(20)]
-//public string? RepairPhone2 { get; set; }
-//public string? RepairPortal2 { get; set; }
-//[StringLength(100)]
-//public string? RepairContact3 { get; set; }
-//[StringLength(20)]
-//public string? RepairPhone3 { get; set; }
-//public string? RepairPortal3 { get; set; }

@@ -1,5 +1,5 @@
 ﻿using AccountInfo.Data.Models;
-using System.Net.Http.Json;
+using AccountInfo.Shared.Enums;
 
 namespace AccountInfo.Web.Services;
 

@@ -1,8 +1,7 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using AccountInfo.Shared.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace AccountInfo.Data.Models
 {
@@ -20,7 +19,7 @@ namespace AccountInfo.Data.Models
 
         [Required]
         [StringLength(100)]
-        public string AMCompany { get; set; } = string.Empty;  
+        public string AMCompany { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100)]

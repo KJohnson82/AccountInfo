@@ -1,10 +1,8 @@
 ﻿
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+
+using AccountInfo.Shared.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace AccountInfo.Data.Models
 {
@@ -60,7 +58,6 @@ namespace AccountInfo.Data.Models
         public string? StoreManager { get; set; }
         public bool? Active { get; set; } = true;
 
-        [JsonIgnore]
         public DateTime? RecordAdd { get; set; } = DateTime.Now;
 
         // Navigation property
