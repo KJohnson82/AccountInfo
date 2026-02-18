@@ -22,9 +22,6 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AccountInfo.Data\AccountInfo.Data.csproj" />
-		<ProjectReference Include="..\AccountInfo.ServiceDefaults\AccountInfo.ServiceDefaults.csproj" />
-		<ProjectReference Include="..\AccountInfo.Shared\AccountInfo.Shared.csproj" />
 		<ProjectReference Include="..\AccountInfo.Web\AccountInfo.Web.csproj" />
 		<ProjectReference Include="..\AccountInfo.ApiService\AccountInfo.ApiService.csproj" />
 	</ItemGroup>

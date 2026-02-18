@@ -1,0 +1,34 @@
+/* File: AccountInfo.Web/Components/Shared/AccountEditWindow.razor.css */
+
+.edit-form {
+    padding: 8px 4px;
+}
+
+.form-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--kendo-color-primary, #0d6efd);
+    margin: 20px 0 10px 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--kendo-color-primary-subtle, #e7f1ff);
+}
+
+.form-section-title:first-child {
+    margin-top: 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+}
+
+.form-field {
+    min-width: 0;
+}
+
+.form-field.full-width {
+    grid-column: 1 / -1;
+}

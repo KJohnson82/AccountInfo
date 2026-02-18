@@ -1,0 +1,284 @@
+@* File: AccountInfo.Web/Components/Shared/AccountEditWindow.razor *@
+@* Telerik Window for editing Internet or Phone account information *@
+@* Currently read/display only — save logic will be wired up when API PUT endpoints are built *@
+
+@using AccountInfo.Shared.DTOs
+
+<TelerikWindow @bind-Visible="@isVisible"
+               Modal="true"
+               Width="700px"
+               Height="80vh"
+               Class="edit-window">
+    <WindowTitle>
+        <div class="k-d-flex k-align-items-center k-gap-2">
+            <TelerikSvgIcon Icon="@SvgIcon.Pencil" />
+            <span>Edit @(AccountType == "internet" ? "Internet" : "Phone") Account</span>
+        </div>
+    </WindowTitle>
+    <WindowActions>
+        <WindowAction Name="Close" />
+    </WindowActions>
+    <WindowContent>
+        @if (AccountType == "internet" && InternetAccount is not null)
+        {
+            <div class="edit-form">
+                <h5 class="form-section-title">Account Information</h5>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.InternetProvider" Label="Provider" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.DataAccountNumber" Label="Account Number" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.CircuitId" Label="Circuit ID" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.ServiceType" Label="Service Type" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.ConnectionType" Label="Connection Type" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.ConnectionSpeed" Label="Connection Speed" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikNumericTextBox @bind-Value="@editInternet.MonthlyCost" Label="Monthly Cost" Format="C2" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikDatePicker @bind-Value="@editInternet.BillEntryDate" Label="Bill Entry Date" />
+                    </div>
+                </div>
+
+                <h5 class="form-section-title">Network Details</h5>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.IPAddress" Label="IP Address" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.SubnetMask" Label="Subnet Mask" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.DefaultGateway" Label="Default Gateway" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.DNSPrimary" Label="DNS Primary" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.DNSSecondary" Label="DNS Secondary" />
+                    </div>
+                </div>
+
+                <h5 class="form-section-title">Admin Portal</h5>
+                <div class="form-grid">
+                    <div class="form-field full-width">
+                        <TelerikTextBox @bind-Value="@editInternet.AdminPortalURL" Label="Portal URL" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.AdminUsername" Label="Username" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editInternet.AdminPassword" Label="Password" />
+                    </div>
+                    <div class="form-field full-width">
+                        <TelerikTextArea @bind-Value="@editInternet.AdminInfo" Label="Admin Info" AutoSize="true" />
+                    </div>
+                    <div class="form-field full-width">
+                        <TelerikTextArea @bind-Value="@editInternet.AdminAnswers" Label="Security Answers" AutoSize="true" />
+                    </div>
+                </div>
+
+                <h5 class="form-section-title">Notes</h5>
+                <div class="form-field full-width">
+                    <TelerikTextArea @bind-Value="@editInternet.Notes" Label="Notes" AutoSize="true" />
+                </div>
+            </div>
+        }
+        else if (AccountType == "phone" && PhoneAccount is not null)
+        {
+            <div class="edit-form">
+                <h5 class="form-section-title">Account Information</h5>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editPhone.LocalProvider" Label="Local Provider" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editPhone.LocalAccountNumber" Label="Local Account #" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editPhone.LongDistanceProvider" Label="Long Distance Provider" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editPhone.LongDistanceAccountNumber" Label="Long Distance Acct #" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikNumericTextBox @bind-Value="@editPhone.MonthlyCost" Label="Monthly Cost" Format="C2" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikDatePicker @bind-Value="@editPhone.BillEntryDate" Label="Bill Entry Date" />
+                    </div>
+                </div>
+
+                <h5 class="form-section-title">Phone Numbers</h5>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editPhone.TermNumber" Label="Term Number" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editPhone.FaxNumber" Label="Fax Number" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editPhone.TollFreeNumber1" Label="Toll Free #1" />
+                    </div>
+                    <div class="form-field">
+                        <TelerikTextBox @bind-Value="@editPhone.TollFreeNumber2" Label="Toll Free #2" />
+                    </div>
+                    <div class="form-field full-width">
+                        <TelerikTextArea @bind-Value="@editPhone.RolloverNumbers" Label="Rollover Numbers" AutoSize="true" />
+                    </div>
+                </div>
+
+                <h5 class="form-section-title">Notes</h5>
+                <div class="form-field full-width">
+                    <TelerikTextArea @bind-Value="@editPhone.Notes" Label="Notes" AutoSize="true" />
+                </div>
+            </div>
+        }
+    </WindowContent>
+    <WindowFooter>
+        <div class="k-d-flex k-justify-content-end k-gap-2 k-p-2">
+            <TelerikButton OnClick="@Cancel"
+                           ThemeColor="@ThemeConstants.Button.ThemeColor.Base">
+                Cancel
+            </TelerikButton>
+            <TelerikButton OnClick="@Save"
+                           ThemeColor="@ThemeConstants.Button.ThemeColor.Primary"
+                           Icon="@SvgIcon.Save"
+                           Enabled="@(!isSaving)">
+                @(isSaving ? "Saving..." : "Save Changes")
+            </TelerikButton>
+        </div>
+    </WindowFooter>
+</TelerikWindow>
+
+@code {
+    [Parameter] public InternetAccountDto? InternetAccount { get; set; }
+    [Parameter] public PhoneAccountDto? PhoneAccount { get; set; }
+    [Parameter] public string? AccountType { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
+
+    private bool isVisible;
+    private bool isSaving;
+
+    // Edit copies — we don't modify the original until save succeeds
+    private InternetAccountDto editInternet = new();
+    private PhoneAccountDto editPhone = new();
+
+    /// <summary>Called by the parent to open the edit window.</summary>
+    public void Open()
+    {
+        // Clone current values into edit copies
+        if (AccountType == "internet" && InternetAccount is not null)
+        {
+            editInternet = CloneInternet(InternetAccount);
+        }
+        else if (AccountType == "phone" && PhoneAccount is not null)
+        {
+            editPhone = ClonePhone(PhoneAccount);
+        }
+
+        isVisible = true;
+        StateHasChanged();
+    }
+
+    private void Cancel()
+    {
+        isVisible = false;
+    }
+
+    private async Task Save()
+    {
+        isSaving = true;
+        StateHasChanged();
+
+        try
+        {
+            // TODO: Wire up API PUT calls when endpoints are built
+            // if (AccountType == "internet")
+            //     await ApiClient.UpdateInternetAccountAsync(editInternet.Id, editInternet);
+            // else if (AccountType == "phone")
+            //     await ApiClient.UpdatePhoneAccountAsync(editPhone.Id, editPhone);
+
+            await Task.Delay(500); // Simulate save for now
+
+            isVisible = false;
+            await OnSaved.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving account: {ex.Message}");
+            // TODO: Show error notification
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    // ── Cloners — shallow copy DTOs for editing ──
+
+    private static InternetAccountDto CloneInternet(InternetAccountDto src) => new()
+    {
+        Id = src.Id,
+        LocationId = src.LocationId,
+        LocationName = src.LocationName,
+        InternetProvider = src.InternetProvider,
+        ServiceType = src.ServiceType,
+        DataAccountNumber = src.DataAccountNumber,
+        CircuitId = src.CircuitId,
+        ConnectionType = src.ConnectionType,
+        ConnectionSpeed = src.ConnectionSpeed,
+        IPAddress = src.IPAddress,
+        SubnetMask = src.SubnetMask,
+        DefaultGateway = src.DefaultGateway,
+        DNSPrimary = src.DNSPrimary,
+        DNSSecondary = src.DNSSecondary,
+        AccountAddedDate = src.AccountAddedDate,
+        BillEntryDate = src.BillEntryDate,
+        MonthlyCost = src.MonthlyCost,
+        AdminPortalURL = src.AdminPortalURL,
+        AdminUsername = src.AdminUsername,
+        AdminPassword = src.AdminPassword,
+        AdminInfo = src.AdminInfo,
+        AdminAnswers = src.AdminAnswers,
+        Notes = src.Notes,
+        Active = src.Active,
+        RecordAdd = src.RecordAdd,
+        AccountManagers = src.AccountManagers,
+        RepairContacts = src.RepairContacts
+    };
+
+    private static PhoneAccountDto ClonePhone(PhoneAccountDto src) => new()
+    {
+        Id = src.Id,
+        LocationId = src.LocationId,
+        LocationName = src.LocationName,
+        LocalProvider = src.LocalProvider,
+        LocalAccountNumber = src.LocalAccountNumber,
+        LongDistanceProvider = src.LongDistanceProvider,
+        LongDistanceAccountNumber = src.LongDistanceAccountNumber,
+        TermNumber = src.TermNumber,
+        FaxNumber = src.FaxNumber,
+        TollFreeNumber1 = src.TollFreeNumber1,
+        TollFreeNumber2 = src.TollFreeNumber2,
+        RolloverNumbers = src.RolloverNumbers,
+        AccountAddedDate = src.AccountAddedDate,
+        BillEntryDate = src.BillEntryDate,
+        MonthlyCost = src.MonthlyCost,
+        Notes = src.Notes,
+        Active = src.Active,
+        RecordAdd = src.RecordAdd,
+        AccountManagers = src.AccountManagers,
+        RepairContacts = src.RepairContacts
+    };
+}

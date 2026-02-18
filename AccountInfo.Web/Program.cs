@@ -1,6 +1,7 @@
 using AccountInfo.Data.Data;
 using AccountInfo.ServiceDefaults;
 using AccountInfo.Web.Components;
+using AccountInfo.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -20,12 +21,16 @@ builder.Services.AddOutputCache();
 
 //builder.AddNpgsqlDataSource(connectionName: "appinfodb");
 
-builder.Services.AddHttpClient("ApiClient", client =>
+//builder.Services.AddHttpClient("ApiClient", client =>
+//{
+//    client.BaseAddress = new Uri("https+http://accountinfoapiservice");
+//});
+
+//builder.AddNpgsqlDbContext<AppInfoDbContext>(connectionName: "appinfodb");
+builder.Services.AddHttpClient<ApiClient>(client =>
 {
     client.BaseAddress = new Uri("https+http://accountinfoapiservice");
 });
-
-builder.AddNpgsqlDbContext<AppInfoDbContext>(connectionName: "appinfodb");
 
 
 //builder.Services.AddHttpClient<WeatherApiClient>(client =>

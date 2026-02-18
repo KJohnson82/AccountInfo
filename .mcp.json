@@ -1,0 +1,26 @@
+﻿{
+  "servers": {
+    "telerik-blazor-mcp": {
+      "type": "stdio",
+      "command": "dnx",
+      "args": [
+        "Telerik.Blazor.MCP",
+        "--yes"
+      ],
+      "env": {
+        "TELERIK_LICENSE_PATH": "C:\\Users\\kevin00j1.MCELROY\\AppData\\Roaming\\Telerik\\telerik-license.txt"
+      }
+    },
+    "telerik-dpl-assistant": {
+      "type": "stdio",
+      "command": "dnx",
+      "args": [
+        "Telerik.DPL.MCP",
+        "--yes"
+      ],
+      "env": {
+        "TELERIK_LICENSE_PATH": "C:\\Users\\kevin00j1.MCELROY\\AppData\\Roaming\\Telerik\\telerik-license.txt"
+      }
+    }
+  }
+}

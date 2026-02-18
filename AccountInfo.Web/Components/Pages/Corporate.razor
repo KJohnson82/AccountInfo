@@ -1,4 +1,10 @@
-﻿@page "/corporate"
+﻿@* @page "/corporate"
+@using AccountInfo.Data.Models
+@using AccountInfo.Shared.DTOs
+@using AccountInfo.Web.Services
+
+@inject ApiClient ApiClient
+@inject NavigationManager NavigationManager
 
 <div class="">
 <TelerikTileLayout Columns="4"
@@ -12,66 +18,32 @@
         <TileLayoutItem RowSpan="1" ColSpan="4" Class="tilelayoutheader fs-4 text-uppercase fw-bold text-start pb-3" >
             <Content>Corporate Accounts</Content>
         </TileLayoutItem>
-        <!-- <TileLayoutItem HeaderText="Location Select" RowSpan="6" ColSpan="1">
-            <TelerikListView Data="@Data"
-                Pageable="true">
-                <HeaderTemplate>
-                </HeaderTemplate>
-                <Template>
-                </Template>
-            </TelerikListView>
-        </TileLayoutItem> -->
+
         <TileLayoutItem HeaderText="Location Select" RowSpan="6" ColSpan="1" >
             <Content>
-                @* <TelerikListView Height="100%" Data="@Data">
+                <div class="button-page-container">
+                    <div class="scrollable-wrapper">
+                        <TelerikListView Data="@Locations" EnableLoaderContainer="true" Class="button-list-container" >
+                            <Template Context="loc">
+                                <TelerikPanelBar>
 
-                </TelerikListView> *@
-                @* <div style="height: 100%; overflow: hidden;"> *@
-                    @* <TelerikListView Data="@Data"
-                                     Height="100%">
-                        <Template>
-                            <div class="p-3 border-bottom list-item-hover">
-                                <div class="fw-bold text-primary">@context.Name</div>
-                                <div class="small text-muted">
-                                    <i class="k-icon k-i-marker-pin"></i> @context.Location
-                                </div>
-                            </div>
-                        </Template>
-                    </TelerikListView> *@
-                    // How this is done in the other app
-                        @* <div class="button-page-container">
-                            <div class="scrollable-wrapper">
-                                <TelerikListView Data="@Departments" EnableLoaderContainer="true" Class="button-list-container">
-                                    <Template Context="dept">
-                                        <NavLink href="@($"/corporate/{dept.Id}")" class="k-text-no-underline k-shadow">
-                                            <div class="menu-item rounded-3 k-d-flex k-flex-row k-text-uppercase k-font-size-lg k-font-semibold k-text-white k-justify-content-start k-align-items-center k-pl-10 k-bg-gradient k-py-6 hover:k-elevation-2">
-                                                @dept.DeptName
-                                            </div>
-                                        </NavLink>
-                                    </Template>
-                                </TelerikListView>
-                            </div>
-                        </div> *@
-                @* </div> *@
+                                </TelerikPanelBar>
+                                <NavLink href="@($"/corporate/{loc.Id}")" class="k-text-no-underline k-shadow">
+                                    <div class="menu-item rounded-3 k-d-flex k-flex-row k-text-uppercase k-font-size-lg k-font-semibold k-text-white k-justify-content-start k-align-items-center k-pl-10 k-bg-gradient k-py-6 k-px-10 hover:k-elevation-2">
+                                        @loc.LocName
+                                    </div>
+                                    </NavLink>
+                                </Template>
+
+                        </TelerikListView>
+
+                    </div>
+                </div>
             </Content>
         </TileLayoutItem>
         <TileLayoutItem HeaderText="Account Details" RowSpan="6" ColSpan="3">
             <Content>
-                @* <TelerikGrid Data="@Data" Height="100%" Pageable="true" PageSize="5">
-                    <GridColumns>
-                        <GridColumn Field="@nameof(SampleData.Name)" Title="Facility" />
-                        <GridColumn Field="@nameof(SampleData.Location)" Title="Location" />
-                        <GridColumn Field="@nameof(SampleData.Projects)" Title="Active Projects" Width="150px" />
-                        <GridColumn Field="@nameof(SampleData.Status)" Title="Status">
-                            <Template>
-                                @{
-                                    var item = context as SampleData;
-                                    <span class="badge @(item.Status == "Active" ? "bg-success" : "bg-warning")">@item.Status</span>
-                                }
-                            </Template>
-                        </GridColumn>
-                    </GridColumns>
-                </TelerikGrid> *@
+
             </Content>
         </TileLayoutItem>
     </TileLayoutItems>
@@ -83,8 +55,9 @@
 
     
     .menu-item {
-        background-color: #ff6358;
+        background-color: var(--kendo-color-primary);
         margin: 8px 10px;
+        padding: 10px 6px 10px 6px;
         border-radius: 0.75rem;
         flex: 1;
         letter-spacing: 0.5px;
@@ -98,7 +71,7 @@
         .menu-item:hover {
             transition: transform 0.2s ease-in, opacity 0.2s ease-in;
             transform: translateY(0) scale(0.95);
-            background-color: #FA574B;
+        background-color: var(--kendo-color-primary-hover);
         }
 
     .button-page-container {
@@ -136,7 +109,7 @@
         letter-spacing: 1px;
     }
 
-    /* Fill and scroll behavior for tile content */
+
     .tile-panel-inner {
         height: 100%;
         display: flex;
@@ -149,6 +122,64 @@
 
 @code {
 
-    
+    private LocationDto? corporate;
+    private List<LocationDto> Locations = new List<LocationDto>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        corporate = await ApiClient.GetLocationByIdAsync(1);
+
+        if (corporate is not null)
+        {
+            Locations = new List<LocationDto> { corporate };
+        }
+    }
+
+}
+ *@
+
+@page "/corporate"
+
+@using AccountInfo.Shared.DTOs
+@using AccountInfo.Web.Components.Layout
+@using AccountInfo.Web.Services
+
+@inject ApiClient ApiClient
+
+<AccountPageLayout PageTitle="Corporate Accounts"
+                   Locations="@locations"
+                   IsLoadingLocations="@isLoading">
+    <HeaderActions>
+        @* Optional: Add buttons for creating new providers, etc. *@
+        @* <TelerikButton Icon="@SvgIcon.Plus" ThemeColor="@ThemeConstants.Button.ThemeColor.Light">
+            Add Provider
+        </TelerikButton> *@
+    </HeaderActions>
+</AccountPageLayout>
+
+@code {
+    private List<LocationDto>? locations;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // TODO: Replace with GetLocationsByLoctypeAsync(1) when that endpoint exists
+            // For now, filter client-side
+            var allLocations = await ApiClient.GetLocationsAsync();
+            locations = allLocations?
+                .Where(l => l.Loctype == 1) // 1 = Corporate
+                .ToList() ?? new();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading corporate locations: {ex.Message}");
+            locations = new();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 }

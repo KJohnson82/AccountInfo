@@ -1,0 +1,393 @@
+﻿@* File: AccountInfo.Web/Components/Shared/AccountPageLayout.razor *@
+@* Reusable tile layout for all account pages (Corporate, MetalMart, ServiceCenter, Plant) *@
+
+@using AccountInfo.Shared.DTOs
+@using AccountInfo.Web
+@using AccountInfo.Web.Services
+
+@inject ApiClient ApiClient
+
+<div class="account-page-layout">
+    <TelerikTileLayout Columns="4"
+                       Height="calc(100vh - var(--app-bottom-bar-height, 100px) - 1rem)"
+                       ColumnSpacing="10px"
+                       RowSpacing="10px"
+                       Resizable="true"
+                       Reorderable="false"
+                       Class="tilelayoutmain pt-0">
+        <TileLayoutItems>
+            @* ═══════════════════════════════════════════════════════════ *@
+            @* HEADER TILE — Page title + optional action buttons         *@
+            @* ═══════════════════════════════════════════════════════════ *@
+            <TileLayoutItem RowSpan="1" ColSpan="4" Class="tilelayoutheader fs-4 text-uppercase fw-bold text-start pb-3">
+                <Content>
+                    <div class="k-d-flex k-justify-content-between k-align-items-center k-w-full">
+                        <span>@PageTitle</span>
+                        @if (HeaderActions is not null)
+                        {
+                            <div class="k-d-flex k-gap-2">
+                                @HeaderActions
+                            </div>
+                        }
+                    </div>
+                </Content>
+            </TileLayoutItem>
+
+            @* ═══════════════════════════════════════════════════════════ *@
+            @* LEFT TILE — Location list with expandable PanelBar         *@
+            @* ═══════════════════════════════════════════════════════════ *@
+            <TileLayoutItem HeaderText="Location Select" RowSpan="6" ColSpan="1">
+                <Content>
+                    <div class="location-panel-container">
+                        <div class="scrollable-wrapper">
+                            @if (IsLoadingLocations)
+                            {
+                                <div class="k-d-flex k-justify-content-center k-align-items-center k-py-10">
+                                    <TelerikLoader Visible="true" Size="@ThemeConstants.Loader.Size.Large" />
+                                </div>
+                            }
+                            else if (Locations is null || Locations.Count == 0)
+                            {
+                                <div class="k-text-center k-py-10 k-text-secondary">
+                                    No locations found.
+                                </div>
+                            }
+                            else
+                            {
+                                @foreach (var location in Locations)
+                                {
+                                    <div class="location-card @(expandedLocationId == location.Id ? "expanded" : "")"
+                                         @key="location.Id">
+
+                                        @* Location header — click to expand/collapse *@
+                                        <div class="location-header" @onclick="() => ToggleLocationAsync(location.Id)">
+                                            <TelerikSvgIcon Icon="@(expandedLocationId == location.Id ? SvgIcon.ChevronDown : SvgIcon.ChevronRight)"
+                                                            Class="location-chevron" />
+                                            <span class="location-name">@location.LocName</span>
+                                            @if (!string.IsNullOrEmpty(location.City))
+                                            {
+                                                <span class="location-city">@location.City, @location.State</span>
+                                            }
+                                        </div>
+
+                                        @* Expandable account categories *@
+                                        @if (expandedLocationId == location.Id)
+                                        {
+                                            <div class="location-accounts">
+                                                @if (isLoadingAccounts)
+                                                {
+                                                    <div class="k-d-flex k-justify-content-center k-py-4">
+                                                        <TelerikLoader Visible="true" Size="@ThemeConstants.Loader.Size.Small" />
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    @* ── Internet Accounts ── *@
+                                                    <div class="account-category">
+                                                        <div class="category-header" @onclick='() => ToggleCategory("internet")'>
+                                                            <TelerikSvgIcon Icon="@(expandedCategory == "internet" ? SvgIcon.ChevronDown : SvgIcon.ChevronRight)" />
+                                                            <TelerikSvgIcon Icon="@SvgIcon.Globe" Class="category-icon" />
+                                                            <span>Internet</span>
+                                                            <span class="category-count">(@(internetAccounts?.Count ?? 0))</span>
+                                                        </div>
+
+                                                        @if (expandedCategory == "internet" && internetAccounts is not null)
+                                                        {
+                                                            <div class="account-list">
+                                                                @if (internetAccounts.Count == 0)
+                                                                {
+                                                                    <div class="no-accounts">No internet accounts</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @foreach (var acct in internetAccounts)
+                                                                    {
+                                                                        <div class="account-item @(selectedAccountType == "internet" && selectedAccountId == acct.Id ? "selected" : "")"
+                                                                             @onclick='() => SelectAccount("internet", acct.Id)'
+                                                                             @key="acct.Id">
+                                                                            <TelerikSvgIcon Icon="@SvgIcon.Globe" Size="@ThemeConstants.SvgIcon.Size.Small" />
+                                                                            <span>@acct.InternetProvider</span>
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                            </div>
+                                                        }
+                                                    </div>
+
+                                                    @* ── Phone Accounts ── *@
+                                                    <div class="account-category">
+                                                        <div class="category-header" @onclick='() => ToggleCategory("phone")'>
+                                                            <TelerikSvgIcon Icon="@(expandedCategory == "phone" ? SvgIcon.ChevronDown : SvgIcon.ChevronRight)" />
+                                                            <TelerikSvgIcon Icon="@SvgIcon.Headset" Class="category-icon" />
+                                                            <span>Phone</span>
+                                                            <span class="category-count">(@(phoneAccounts?.Count ?? 0))</span>
+                                                        </div>
+
+                                                        @if (expandedCategory == "phone" && phoneAccounts is not null)
+                                                        {
+                                                            <div class="account-list">
+                                                                @if (phoneAccounts.Count == 0)
+                                                                {
+                                                                    <div class="no-accounts">No phone accounts</div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @foreach (var acct in phoneAccounts)
+                                                                    {
+                                                                        <div class="account-item @(selectedAccountType == "phone" && selectedAccountId == acct.Id ? "selected" : "")"
+                                                                             @onclick='() => SelectAccount("phone", acct.Id)'
+                                                                             @key="acct.Id">
+                                                                            <TelerikSvgIcon Icon="@SvgIcon.Headset" Size="@ThemeConstants.SvgIcon.Size.Small" />
+                                                                            <span>@acct.LocalProvider</span>
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </Content>
+            </TileLayoutItem>
+
+            @* ═══════════════════════════════════════════════════════════ *@
+            @* RIGHT TILE — Account detail panel with animation           *@
+            @* ═══════════════════════════════════════════════════════════ *@
+            <TileLayoutItem HeaderText="Account Details" RowSpan="6" ColSpan="3">
+                <Content>
+                    <div class="detail-panel-container">
+                        <TelerikAnimationContainer @ref="@animationContainerRef"
+                                                   AnimationType="@AnimationType.SlideRight"
+                                                   AnimationDuration="300"
+                                                   Width="100%"
+                                                   Height="100%"
+                                                   Class="detail-animation-container">
+                            @if (selectedAccountType == "internet" && selectedInternetAccount is not null)
+                            {
+                                <AccountDetailPanel InternetAccount="@selectedInternetAccount"
+                                                    OnEditClicked="@OpenEditWindow" />
+                            }
+                            else if (selectedAccountType == "phone" && selectedPhoneAccount is not null)
+                            {
+                                <AccountDetailPanel PhoneAccount="@selectedPhoneAccount"
+                                                    OnEditClicked="@OpenEditWindow" />
+                            }
+                        </TelerikAnimationContainer>
+
+                        @if (selectedAccountId is null)
+                        {
+                            <div class="empty-state k-d-flex k-flex-col k-justify-content-center k-align-items-center k-h-full">
+                                <TelerikSvgIcon Icon="@SvgIcon.InfoCircle" Size="@ThemeConstants.SvgIcon.Size.ExtraLarge" Class="k-text-secondary" />
+                                <p class="k-text-secondary k-mt-4 k-font-size-lg">Select an account from the left to view details</p>
+                            </div>
+                        }
+                    </div>
+                </Content>
+            </TileLayoutItem>
+        </TileLayoutItems>
+    </TelerikTileLayout>
+
+    @* ═══════════════════════════════════════════════════════════════════ *@
+    @* EDIT WINDOW — Telerik Window for editing account info              *@
+    @* ═══════════════════════════════════════════════════════════════════ *@
+    <AccountEditWindow @ref="editWindowRef"
+                       InternetAccount="@selectedInternetAccount"
+                       PhoneAccount="@selectedPhoneAccount"
+                       AccountType="@selectedAccountType"
+                       OnSaved="@OnAccountSaved" />
+</div>
+
+@code {
+    // ──────────────────────────────────────────────
+    // Parameters — set by the consuming page
+    // ──────────────────────────────────────────────
+
+    /// <summary>Page title displayed in the header tile (e.g., "Corporate Accounts")</summary>
+    [Parameter] public string PageTitle { get; set; } = "Accounts";
+
+    /// <summary>List of locations to display in the left panel.</summary>
+    [Parameter] public List<LocationDto>? Locations { get; set; }
+
+    /// <summary>Whether locations are still loading.</summary>
+    [Parameter] public bool IsLoadingLocations { get; set; }
+
+    /// <summary>Optional action buttons to render in the header tile (Add Location, Add Provider, etc.)</summary>
+    [Parameter] public RenderFragment? HeaderActions { get; set; }
+
+    // ──────────────────────────────────────────────
+    // Internal state
+    // ──────────────────────────────────────────────
+
+    private int? expandedLocationId;
+    private string? expandedCategory; // "internet" or "phone"
+    private string? selectedAccountType; // "internet" or "phone"
+    private int? selectedAccountId;
+
+    private List<InternetAccountDto>? internetAccounts;
+    private List<PhoneAccountDto>? phoneAccounts;
+    private InternetAccountDto? selectedInternetAccount;
+    private PhoneAccountDto? selectedPhoneAccount;
+    private bool isLoadingAccounts;
+
+    private TelerikAnimationContainer? animationContainerRef;
+    private AccountEditWindow? editWindowRef;
+
+    // ──────────────────────────────────────────────
+    // Location expand/collapse — triggers lazy load
+    // ──────────────────────────────────────────────
+
+    private async Task ToggleLocationAsync(int locationId)
+    {
+        if (expandedLocationId == locationId)
+        {
+            // Collapse
+            expandedLocationId = null;
+            expandedCategory = null;
+            await ClearSelectionAsync();
+            return;
+        }
+
+        expandedLocationId = locationId;
+        expandedCategory = null;
+        await ClearSelectionAsync();
+
+        // Lazy-load accounts for this location
+        isLoadingAccounts = true;
+        StateHasChanged();
+
+        try
+        {
+            var internetTask = ApiClient.GetInternetAccountsByLocationAsync(locationId);
+            var phoneTask = ApiClient.GetPhoneAccountsByLocationAsync(locationId);
+
+            await Task.WhenAll(internetTask, phoneTask);
+
+            internetAccounts = await internetTask ?? new();
+            phoneAccounts = await phoneTask ?? new();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading accounts for location {locationId}: {ex.Message}");
+            internetAccounts = new();
+            phoneAccounts = new();
+        }
+        finally
+        {
+            isLoadingAccounts = false;
+        }
+    }
+
+    // ──────────────────────────────────────────────
+    // Category expand/collapse (Internet / Phone)
+    // ──────────────────────────────────────────────
+
+    private void ToggleCategory(string category)
+    {
+        expandedCategory = expandedCategory == category ? null : category;
+    }
+
+    // ──────────────────────────────────────────────
+    // Account selection — loads full details + shows animation
+    // ──────────────────────────────────────────────
+
+    private async Task SelectAccount(string accountType, int accountId)
+    {
+        // If same account clicked, deselect
+        if (selectedAccountType == accountType && selectedAccountId == accountId)
+        {
+            await ClearSelectionAsync();
+            return;
+        }
+
+        // Hide current detail (if showing) before switching
+        if (selectedAccountId is not null && animationContainerRef is not null)
+        {
+            await animationContainerRef.HideAsync();
+        }
+
+        selectedAccountType = accountType;
+        selectedAccountId = accountId;
+        selectedInternetAccount = null;
+        selectedPhoneAccount = null;
+
+        try
+        {
+            if (accountType == "internet")
+            {
+                selectedInternetAccount = await ApiClient.GetInternetAccountByIdAsync(accountId);
+            }
+            else if (accountType == "phone")
+            {
+                selectedPhoneAccount = await ApiClient.GetPhoneAccountByIdAsync(accountId);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading account details: {ex.Message}");
+        }
+
+        StateHasChanged();
+
+        // Trigger the slide-in animation
+        if (animationContainerRef is not null)
+        {
+            await animationContainerRef.ShowAsync();
+        }
+    }
+
+    private async Task ClearSelectionAsync()
+    {
+        if (animationContainerRef is not null && selectedAccountId is not null)
+        {
+            await animationContainerRef.HideAsync();
+        }
+
+        selectedAccountType = null;
+        selectedAccountId = null;
+        selectedInternetAccount = null;
+        selectedPhoneAccount = null;
+    }
+
+    // ──────────────────────────────────────────────
+    // Edit window
+    // ──────────────────────────────────────────────
+
+    private void OpenEditWindow()
+    {
+        editWindowRef?.Open();
+    }
+
+    private async Task OnAccountSaved()
+    {
+        // Reload the selected account to show updated data
+        if (selectedAccountType == "internet" && selectedAccountId is not null)
+        {
+            selectedInternetAccount = await ApiClient.GetInternetAccountByIdAsync(selectedAccountId.Value);
+        }
+        else if (selectedAccountType == "phone" && selectedAccountId is not null)
+        {
+            selectedPhoneAccount = await ApiClient.GetPhoneAccountByIdAsync(selectedAccountId.Value);
+        }
+
+        // Also refresh the account lists in case provider name changed
+        if (expandedLocationId is not null)
+        {
+            internetAccounts = await ApiClient.GetInternetAccountsByLocationAsync(expandedLocationId.Value) ?? new();
+            phoneAccounts = await ApiClient.GetPhoneAccountsByLocationAsync(expandedLocationId.Value) ?? new();
+        }
+
+        StateHasChanged();
+    }
+}
+
+
+
+@code {
+
+}
