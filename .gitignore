@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/AccountInfo.Web/Components/Layout/AccountDetailPanel.razor

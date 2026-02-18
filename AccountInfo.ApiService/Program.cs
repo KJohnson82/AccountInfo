@@ -67,6 +67,17 @@ api.MapGet("/internetaccounts/{id:int}", async (int id, AppInfoDbContext db) =>
     return account is null ? Results.NotFound() : Results.Ok(MapInternetAccount(account));
 });
 
+api.MapGet("/internetaccounts/bylocation/{locationId:int}", async (int locationId, AppInfoDbContext db) =>
+{
+    var accounts = await db.InternetAccounts
+        .Include(ia => ia.Location)
+        .Include(ia => ia.AccountManagers)
+        .Include(ia => ia.RepairContacts)
+        .Where(ia => ia.LocationId == locationId)
+        .ToListAsync();
+    return Results.Ok(accounts.Select(MapInternetAccount));
+});
+
 api.MapGet("/phoneaccounts", async (AppInfoDbContext db) =>
 {
     var accounts = await db.PhoneAccounts
@@ -85,6 +96,17 @@ api.MapGet("/phoneaccounts/{id:int}", async (int id, AppInfoDbContext db) =>
         .Include(pa => pa.RepairContacts)
         .FirstOrDefaultAsync(pa => pa.Id == id);
     return account is null ? Results.NotFound() : Results.Ok(MapPhoneAccount(account));
+});
+
+api.MapGet("/phoneaccounts/bylocation/{locationId:int}", async (int locationId, AppInfoDbContext db) =>
+{
+    var accounts = await db.PhoneAccounts
+        .Include(pa => pa.Location)
+        .Include(pa => pa.AccountManagers)
+        .Include(pa => pa.RepairContacts)
+        .Where(pa => pa.LocationId == locationId)
+        .ToListAsync();
+    return Results.Ok(accounts.Select(MapPhoneAccount));
 });
 
 api.MapGet("/accountmanagers", async (AppInfoDbContext db) =>
