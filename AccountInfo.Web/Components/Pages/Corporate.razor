@@ -1,7 +1,4 @@
-﻿@* @page "/corporate"
-@using AccountInfo.Data.Models
-@using AccountInfo.Shared.DTOs
-@using AccountInfo.Web.Services
+﻿@page "/corporate"
 
 @inject ApiClient ApiClient
 @inject NavigationManager NavigationManager
@@ -122,44 +119,7 @@
 
 @code {
 
-    private LocationDto? corporate;
-    private List<LocationDto> Locations = new List<LocationDto>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        corporate = await ApiClient.GetLocationByIdAsync(1);
-
-        if (corporate is not null)
-        {
-            Locations = new List<LocationDto> { corporate };
-        }
-    }
-
-}
- *@
-
-@page "/corporate"
-
-@using AccountInfo.Shared.DTOs
-@using AccountInfo.Web.Components.Layout
-@using AccountInfo.Web.Services
-
-@inject ApiClient ApiClient
-
-<AccountPageLayout PageTitle="Corporate Accounts"
-                   Locations="@locations"
-                   IsLoadingLocations="@isLoading">
-    <HeaderActions>
-        @* Optional: Add buttons for creating new providers, etc. *@
-        @* <TelerikButton Icon="@SvgIcon.Plus" ThemeColor="@ThemeConstants.Button.ThemeColor.Light">
-            Add Provider
-        </TelerikButton> *@
-    </HeaderActions>
-</AccountPageLayout>
-
-@code {
-    private List<LocationDto>? locations;
-    private bool isLoading = true;
+    
 
     protected override async Task OnInitializedAsync()
     {
