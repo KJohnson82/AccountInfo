@@ -66,5 +66,8 @@ namespace AccountInfo.Data.Models
         public List<InternetAccount> InternetAccounts { get; set; } = new();
 
         public PhoneAccount? PhoneAccount { get; set; }
+
+        // In case I want to add Departments later
+        //public virtual ICollection<Department> Departments { get; set; } = [];
     }
 }

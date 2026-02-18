@@ -1,0 +1,58 @@
+@* File: AccountInfo.Web/Components/Shared/DetailField.razor *@
+@* Reusable label/value pair for the detail panel *@
+
+<div class="detail-field @(FullWidth ? "full-width" : "")">
+    <span class="field-label">@Label</span>
+
+    @if (string.IsNullOrEmpty(Value) || Value == "—")
+    {
+        <span class="field-value empty">—</span>
+    }
+    else if (!string.IsNullOrEmpty(BadgeClass))
+    {
+        <span class="field-value">
+            <span class="status-badge @BadgeClass">@Value</span>
+        </span>
+    }
+    else if (IsMasked && !showPassword)
+    {
+        <span class="field-value mono">
+            ••••••••
+            <button class="reveal-btn" @onclick="() => showPassword = true" title="Show">
+                <TelerikSvgIcon Icon="@SvgIcon.Eye" Size="@ThemeConstants.SvgIcon.Size.Small" />
+            </button>
+        </span>
+    }
+    else if (IsMasked && showPassword)
+    {
+        <span class="field-value mono">
+            @Value
+            <button class="reveal-btn" @onclick="() => showPassword = false" title="Hide">
+                <TelerikSvgIcon Icon="@SvgIcon.EyeSlash" Size="@ThemeConstants.SvgIcon.Size.Small" />
+            </button>
+        </span>
+    }
+    else if (IsLink)
+    {
+        <a href="@(LinkPrefix ?? ""),@Value" target="_blank" rel="noopener" class="field-value link">
+            @Value
+        </a>
+    }
+    else
+    {
+        <span class="field-value @(IsMono ? "mono" : "")">@Value</span>
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public bool IsLink { get; set; }
+    [Parameter] public string? LinkPrefix { get; set; }
+    [Parameter] public bool IsMono { get; set; }
+    [Parameter] public bool IsMasked { get; set; }
+    [Parameter] public bool FullWidth { get; set; }
+    [Parameter] public string? BadgeClass { get; set; }
+
+    private bool showPassword;
+}

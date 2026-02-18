@@ -16,7 +16,8 @@ namespace AccountInfo.Data.Data
         public DbSet<PhoneAccount> PhoneAccounts { get; set; }
         public DbSet<AccountManager> AccountManagers { get; set; }
         public DbSet<RepairContact> RepairContacts { get; set; }
-        public DbSet<Location> Locations { get; set; }
+        public virtual DbSet<Location> Locations { get; set; }
+        public DbSet<Department> Departments { get; set; }
         //public DbSet<Loctype> Loctypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,26 +32,25 @@ namespace AccountInfo.Data.Data
                      (""AccountType"" = 3 AND ""InternetAccountId"" IS NOT NULL AND ""PhoneAccountId"" IS NOT NULL)";
             }
 
-            // ============================================
-            // Loctype Configuration
-            // ============================================
-            //modelBuilder.Entity<Loctype>(entity =>
-            //{
-            //    entity.ToTable("Loctypes");
+            modelBuilder.Entity<Department>(entity =>
+            {
+                entity.ToTable("Departments");
 
-            //    entity.Property(e => e.LoctypeName)
-            //        .IsRequired()
-            //        .HasMaxLength(50);
+                entity.HasOne(d => d.DeptLocation)
+                    .WithMany()
+                    .HasForeignKey(d => d.LocationId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
-            //    // Seed static data
-            //    entity.HasData(
-            //        new Loctype { Id = 1, LoctypeName = "Corporate" },
-            //        new Loctype { Id = 2, LoctypeName = "Metal Mart" },
-            //        new Loctype { Id = 3, LoctypeName = "Service Center" },
-            //        new Loctype { Id = 4, LoctypeName = "Plant" },
-            //        new Loctype { Id = 5, LoctypeName = "Other" }
-            //    );
-            //});
+                entity.HasIndex(d => d.Active);
+                //entity.HasData(
+                //    new Department { Id = 1, DeptName = "IT", DeptManager = "John Smith", LocationId = 1, RecordAdd = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                //    new Department { Id = 2, DeptName = "HR", DeptManager = "John Smith", LocationId = 1, RecordAdd = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                //    new Department { Id = 3, DeptName = "Finance", DeptManager = "John Smith", LocationId = 1, RecordAdd = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                //    new Department { Id = 4, DeptName = "Operations", DeptManager = "John Smith", LocationId = 1, RecordAdd = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                //    new Department { Id = 5, DeptName = "Sales", DeptManager = "John Smith", LocationId = 1, RecordAdd = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
+                //);
+            });
+
 
             // ============================================
             // Location Configuration & Seed Data
@@ -64,9 +64,40 @@ namespace AccountInfo.Data.Data
                 //    .HasForeignKey(l => l.LoctypeId)
                 //    .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasIndex(l => l.Loctype);
+                entity.HasKey(l => l.Id);
+                entity.Property(l => l.Active).HasDefaultValue(true);
+                entity.Property(l => l.RecordAdd)
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(l => l.LocName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+                entity.Property(l => l.Address)
+                    .IsRequired()
+                    .HasMaxLength(100);
 
-                entity.HasMany(l => l.InternetAccounts)
+                entity.Property(l => l.City)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(l => l.State)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(l => l.Zipcode)
+                    .IsRequired()
+                    .HasMaxLength(10);
+
+                entity.Property(l => l.PhoneNumber).HasMaxLength(15);
+                entity.Property(l => l.FaxNumber).HasMaxLength(15);
+                entity.Property(l => l.Email).HasMaxLength(60);
+                entity.Property(l => l.Hours).HasMaxLength(50);
+                entity.Property(l => l.AreaManager).HasMaxLength(60);
+                entity.Property(l => l.StoreManager).HasMaxLength(60);
+
+                entity.HasIndex(l => l.Loctype);
+                
+
+            entity.HasMany(l => l.InternetAccounts)
                     .WithOne(ia => ia.Location)
                     .HasForeignKey(ia => ia.LocationId)
                     .OnDelete(DeleteBehavior.Restrict);
@@ -75,6 +106,9 @@ namespace AccountInfo.Data.Data
                     .WithOne(pa => pa.Location)
                     .HasForeignKey<PhoneAccount>(pa => pa.LocationId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                //In case I want to add departments later
+                //entity.HasMany(l => l.Departments);
 
                 entity.HasIndex(l => l.LocNum).IsUnique();
                 entity.HasIndex(l => l.Active);
@@ -85,7 +119,7 @@ namespace AccountInfo.Data.Data
                     new Location
                     {
                         Id = 1,
-                        LocName = "Corporate Headquarters",
+                        LocName = "Corporate",
                         LocNum = 101,
                         Address = "123 Main Street",
                         City = "Bossier City",

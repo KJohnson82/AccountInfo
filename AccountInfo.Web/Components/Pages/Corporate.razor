@@ -1,4 +1,10 @@
 ﻿@page "/corporate"
+@using AccountInfo.Data.Models
+@using AccountInfo.Shared.DTOs
+@using AccountInfo.Web.Services
+
+@inject ApiClient ApiClient
+@inject NavigationManager NavigationManager
 
 <div class="">
 <TelerikTileLayout Columns="4"
@@ -23,36 +29,24 @@
         </TileLayoutItem> -->
         <TileLayoutItem HeaderText="Location Select" RowSpan="6" ColSpan="1" >
             <Content>
-                @* <TelerikListView Height="100%" Data="@Data">
+                <div class="button-page-container">
+                    <div class="scrollable-wrapper">
+                        <TelerikListView Data="@Locations" EnableLoaderContainer="true" Class="button-list-container" >
+                            <Template Context="loc">
+                                <TelerikPanelBar>
 
-                </TelerikListView> *@
-                @* <div style="height: 100%; overflow: hidden;"> *@
-                    @* <TelerikListView Data="@Data"
-                                     Height="100%">
-                        <Template>
-                            <div class="p-3 border-bottom list-item-hover">
-                                <div class="fw-bold text-primary">@context.Name</div>
-                                <div class="small text-muted">
-                                    <i class="k-icon k-i-marker-pin"></i> @context.Location
-                                </div>
-                            </div>
-                        </Template>
-                    </TelerikListView> *@
-                    // How this is done in the other app
-                        @* <div class="button-page-container">
-                            <div class="scrollable-wrapper">
-                                <TelerikListView Data="@Departments" EnableLoaderContainer="true" Class="button-list-container">
-                                    <Template Context="dept">
-                                        <NavLink href="@($"/corporate/{dept.Id}")" class="k-text-no-underline k-shadow">
-                                            <div class="menu-item rounded-3 k-d-flex k-flex-row k-text-uppercase k-font-size-lg k-font-semibold k-text-white k-justify-content-start k-align-items-center k-pl-10 k-bg-gradient k-py-6 hover:k-elevation-2">
-                                                @dept.DeptName
-                                            </div>
-                                        </NavLink>
-                                    </Template>
-                                </TelerikListView>
-                            </div>
-                        </div> *@
-                @* </div> *@
+                                </TelerikPanelBar>
+                                <NavLink href="@($"/corporate/{loc.Id}")" class="k-text-no-underline k-shadow">
+                                    <div class="menu-item rounded-3 k-d-flex k-flex-row k-text-uppercase k-font-size-lg k-font-semibold k-text-white k-justify-content-start k-align-items-center k-pl-10 k-bg-gradient k-py-6 k-px-10 hover:k-elevation-2">
+                                        @loc.LocName
+                                    </div>
+                                    </NavLink>
+                                </Template>
+
+                        </TelerikListView>
+
+                    </div>
+                </div>
             </Content>
         </TileLayoutItem>
         <TileLayoutItem HeaderText="Account Details" RowSpan="6" ColSpan="3">
@@ -83,8 +77,9 @@
 
     
     .menu-item {
-        background-color: #ff6358;
+        background-color: var(--kendo-color-primary);
         margin: 8px 10px;
+        padding: 10px 6px 10px 6px;
         border-radius: 0.75rem;
         flex: 1;
         letter-spacing: 0.5px;
@@ -98,7 +93,7 @@
         .menu-item:hover {
             transition: transform 0.2s ease-in, opacity 0.2s ease-in;
             transform: translateY(0) scale(0.95);
-            background-color: #FA574B;
+        background-color: var(--kendo-color-primary-hover);
         }
 
     .button-page-container {
@@ -149,6 +144,17 @@
 
 @code {
 
-    
+    private LocationDto? corporate;
+    private List<LocationDto> Locations = new List<LocationDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        corporate = await ApiClient.GetLocationByIdAsync(1);
+
+        if (corporate is not null)
+        {
+            Locations = new List<LocationDto> { corporate };
+        }
+    }
 
 }

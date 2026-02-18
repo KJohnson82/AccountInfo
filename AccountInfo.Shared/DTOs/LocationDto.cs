@@ -23,7 +23,7 @@
         // Flattened related data
         public string? LoctypeName { get; set; }
 
-        //public List<DepartmentDto> Departments { get; set; } = new List<DepartmentDto>();
+        public List<DepartmentDto> Departments { get; set; } = new List<DepartmentDto>();
         //public List<EmployeeDto> Employees { get; set; } = new List<EmployeeDto>();
     }
 }
